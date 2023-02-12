@@ -4,6 +4,7 @@ var input2;
 var operator;
 var clicked = false;
 
+var display = document.querySelector(".display");
 var btnNum = document.getElementsByClassName("number");
 var btnOperator = document.getElementsByClassName("operator");
 var btnEquals = document.getElementsByClassName("equals");
@@ -15,10 +16,12 @@ btnNum.addEventListener('click', function(e){
     if(clicked == false)
     {
         input1 = e.target.value;
+        display.innerText = input1;
     }
     else
     {
         input2 = e.target.value;
+        display.innerText = input2;
     }        
 });
 
@@ -32,6 +35,7 @@ btnOperator.addEventListener('click', function(e){
     else
     {
         displayValue = displayValue + operate(input1, input2, operator);
+        display.innerText = displayValue;
 
         operator = e.target.value;
 
@@ -47,6 +51,7 @@ btnEquals.addEventListener('click', function(e){
     else
     {
         displayValue = displayValue + operate(input1, input2, operator);
+        display.innerText = displayValue;
 
         clicked = false;
     }
@@ -54,14 +59,17 @@ btnEquals.addEventListener('click', function(e){
 
 btnSign.addEventListener('click', function(e){
     displayValue = displayValue * -1;
+    display.innerText = displayValue;
 });
 
 btnPercent.addEventListener('click', function(e){
     displayValue = displayValue/100;
+    display.innerText = displayValue;
 });
 
 btnDecimal.addEventListener('click', function(e){
-    displayValue = parseInt(displayValue.toString() + '.');
+    displayValue = parseFloat(displayValue.toString() + '.');
+    display.innerText = displayValue;
 });
 
 function add(number1, number2){
