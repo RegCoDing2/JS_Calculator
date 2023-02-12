@@ -3,73 +3,96 @@ var input1;
 var input2;
 var operator;
 var clicked = false;
+var displayLength = 0;
 
-var display = document.querySelector(".display");
-var btnNum = document.getElementsByClassName("number");
-var btnOperator = document.getElementsByClassName("operator");
-var btnEquals = document.getElementsByClassName("equals");
-var btnSign = document.getElementsByClassName("sign");
-var btnPercent = document.getElementsByClassName("percent");
-var btnDecimal = document.getElementsByClassName("decimal");
+const display = document.querySelector(".display");
+const btnNum = document.querySelectorAll(".number");
+const btnOperator = document.querySelectorAll(".operator");
+const btnEquals = document.querySelector(".equals");
+const btnSign = document.querySelector(".sign");
+const btnPercent = document.querySelector(".percent");
+const btnDecimal = document.querySelector(".decimal");
+const btnClear = document.querySelector(".clear")
 
-btnNum.addEventListener('click', function(e){
-    if(clicked == false)
-    {
-        input1 = e.target.value;
-        display.innerText = input1;
-    }
-    else
-    {
-        input2 = e.target.value;
-        display.innerText = input2;
-    }        
+btnClear.addEventListener('click', function(e){
+    displayValue = 0;
+    input1 = 0;
+    input2 = 0;
+    operator = "";
+    clicked = false;
+    displayLength = 0;
+    display.innerText = "";
 });
 
-btnOperator.addEventListener('click', function(e){
-    if(clicked == false)
-    {
-        operator = e.target.value;
+btnNum.forEach((numberButton) => {
+    numberButton.addEventListener('click', function(e) {
+        if(displayLength < 8)
+        {
+            display.innerText = "";
+            display.innerText += e.target.value;
+            displayLength++;
+        }
+    });
+});
 
-        clicked = true;
-    }
-    else
-    {
-        displayValue = displayValue + operate(input1, input2, operator);
-        display.innerText = displayValue;
+btnOperator.forEach((operatorButton) => {
+    operatorButton.addEventListener('click', function(e) {
+        if(clicked == false)
+        {
+            input1 = parseInt(display.innerText);
 
-        operator = e.target.value;
+            operator = e.target.value;
+    
+            clicked = true;
 
-        input1 = displayValue;
-    } 
+            displayLength = 0;
+        }
+        else
+        {
+            displayValue = displayValue + operate(input1, input2, operator);
+            display.innerText = displayValue;
+    
+            operator = e.target.value;
+    
+            input1 = displayValue;
+        } 
+    });
 });
 
 btnEquals.addEventListener('click', function(e){
-    if(input1 == null || input2 == null || operator == null)
+    if(input1 == null && input2 == null && operator == null)
     {
         alert("Error");
     }
     else
     {
-        displayValue = displayValue + operate(input1, input2, operator);
+        input2 = parseInt(display.innerText);
+
+        displayValue = operate(input1, input2, operator);
+        
+        if(displayValue.toString().length > 9)
+        {
+            displayValue = displayValue.toFixed(7);
+        }
+
         display.innerText = displayValue;
 
         clicked = false;
+
+        input2 = null;
     }
 });
 
 btnSign.addEventListener('click', function(e){
-    displayValue = displayValue * -1;
-    display.innerText = displayValue;
+    display.innerText = parseInt(display.innerText) * -1;
 });
 
 btnPercent.addEventListener('click', function(e){
-    displayValue = displayValue/100;
-    display.innerText = displayValue;
+    display.innerText = parseInt(display.innerText)/100;
 });
 
 btnDecimal.addEventListener('click', function(e){
-    displayValue = parseFloat(displayValue.toString() + '.');
-    display.innerText = displayValue;
+    display.innerText = display.innerText.toString() + '.'
 });
 
 function add(number1, number2){

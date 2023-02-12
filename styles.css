@@ -58,6 +58,7 @@
   #zero{
     grid-column: span 2;
   }
+  
   #equals {
     background-color: #c0f0c0;
     position: absolute;
