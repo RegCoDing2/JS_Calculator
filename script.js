@@ -21,6 +21,38 @@ btnClear.addEventListener('click', function(e){
     display.innerText = "";
 });
 
+document.addEventListener('keydown', function(event) {
+    // Check if the key pressed is a number or the backspace key
+    if (event.key >= '0' && event.key <= '9') 
+    {
+        if(chain == true)
+        {
+            display.innerText = "";
+
+            if(display.innerText.length < 9)
+            {
+                display.innerText += event.key;
+            }
+
+            chain = false;
+        }
+        else
+        {
+            if(display.innerText.length < 9)
+            {
+                display.innerText += event.key;
+            }
+        }
+    }
+    if(event.key == 'Backspace')
+    {
+        displayValue = display.innerText;
+
+        display.innerText = displayValue.slice(0, -1);
+    }
+  });
+  
+
 const btnNum = document.querySelectorAll(".number");
 
 btnNum.forEach((numberButton) => {
