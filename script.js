@@ -1,120 +1,214 @@
-var displayValue = 0;
-var input1;
-var input2;
-var operator;
-var clicked = false;
-var displayLength = 0;
+let displayValue = "";
+let input1;
+let input2;
+let operator;
+let operatorClicked = false;
+let equalClicked = false;
+let chain = false;
 
 const display = document.querySelector(".display");
-const btnNum = document.querySelectorAll(".number");
-const btnOperator = document.querySelectorAll(".operator");
-const btnEquals = document.querySelector(".equals");
-const btnSign = document.querySelector(".sign");
-const btnPercent = document.querySelector(".percent");
-const btnDecimal = document.querySelector(".decimal");
-const btnClear = document.querySelector(".clear")
+
+const btnClear = document.querySelector(".clear");
 
 btnClear.addEventListener('click', function(e){
-    displayValue = 0;
-    input1 = 0;
-    input2 = 0;
+    displayValue = null;
+    input1 = null;
+    input2 = null;
     operator = "";
-    clicked = false;
-    displayLength = 0;
+    operatorClicked = false;
+    equalClicked = false;
+    chain = false;
     display.innerText = "";
 });
 
+const btnNum = document.querySelectorAll(".number");
+
 btnNum.forEach((numberButton) => {
     numberButton.addEventListener('click', function(e) {
-        if(displayLength < 8)
+        if(chain == true)
         {
             display.innerText = "";
-            display.innerText += e.target.value;
-            displayLength++;
-        }
-    });
-});
 
-btnOperator.forEach((operatorButton) => {
-    operatorButton.addEventListener('click', function(e) {
-        if(clicked == false)
-        {
-            input1 = parseInt(display.innerText);
+            if(display.innerText.length < 9)
+            {
+                display.innerText += e.target.value;
+            }
 
-            operator = e.target.value;
-    
-            clicked = true;
-
-            displayLength = 0;
+            chain = false;
         }
         else
         {
-            displayValue = displayValue + operate(input1, input2, operator);
-            display.innerText = displayValue;
-    
-            operator = e.target.value;
-    
-            input1 = displayValue;
-        } 
+            if(display.innerText.length < 9)
+            {
+                display.innerText += e.target.value;
+            }
+        }
     });
 });
 
-btnEquals.addEventListener('click', function(e){
-    if(input1 == null && input2 == null && operator == null)
+const btnOperator = document.querySelectorAll(".operator");
+
+btnOperator.forEach((operatorButton) => {
+    operatorButton.addEventListener('click', function(e) {
+
+    if(display.innerText.toString() == "")
     {
-        alert("Error");
+
     }
     else
     {
-        input2 = parseInt(display.innerText);
-
-        displayValue = operate(input1, input2, operator);
-        
-        if(displayValue.toString().length > 9)
+        if(operatorClicked == false)
         {
-            displayValue = displayValue.toFixed(7);
+            input1 = parseFloat(display.innerText);
+
+            operator = e.target.value;
+
+            display.innerText = "";
+
+            operatorClicked = true;
+
+            changeOperator = true;
+
+            equalClicked = false;
         }
+        else if(operatorClicked == true)   //For chaining purposes
+        {
+            input2 = parseFloat(display.innerText);
 
-        display.innerText = displayValue;
+            displayValue = operate(input1, input2, operator);
+            
+            if (displayValue.toString().length > 9) 
+            {
+                displayValue = parseFloat(displayValue.toFixed(9));
+            }
 
-        clicked = false;
+            display.innerText = displayValue;
 
-        input2 = null;
+            input1 = parseFloat(display.innerText); 
+
+            operator = e.target.value;
+
+            equalClicked = false;  
+
+            chain = true;
+        }
+    }
+    });
+});
+
+const btnEquals = document.querySelector(".equals");
+
+btnEquals.addEventListener('click', function(e){
+    if(display.innerText.toString() == "")
+    {
+        
+    }
+    else
+    {
+        //--------------------------------Normal---------------------------------
+        if(equalClicked == false)
+        {
+            input2 = parseFloat(display.innerText);
+
+            displayValue = operate(input1, input2, operator);
+            
+            if (displayValue.toString().length > 9) 
+            {
+                displayValue = parseFloat(displayValue.toFixed(9));
+            }
+
+            display.innerText = displayValue;
+
+            input1 = parseFloat(display.innerText);
+
+            operatorClicked = false;
+
+            changeOperator = false;
+
+            equalClicked = true;
+        }
+        else    //----------------------Chain--------------------------------------
+        {
+            display.innerText = "";
+
+            displayValue = operate(input1, input2, operator);
+            
+            if (displayValue.toString().length > 9) 
+            {
+                displayValue = parseFloat(displayValue.toFixed(9));
+            }
+
+            display.innerText = displayValue;
+
+            input1 = parseFloat(display.innerText);
+        }
     }
 });
 
+const btnSign = document.querySelector(".sign");
+
 btnSign.addEventListener('click', function(e){
-    display.innerText = parseInt(display.innerText) * -1;
+    if(display.innerText.toString() == "")
+    {
+
+    }
+    else
+    {
+       display.innerText = parseFloat(display.innerText) * -1; 
+    }
+    
 });
+
+const btnPercent = document.querySelector(".percent");
 
 btnPercent.addEventListener('click', function(e){
-    display.innerText = parseInt(display.innerText)/100;
+    if(display.innerText.toString() == "")
+    {
+
+    }
+    else
+    {  
+        displayValue = parseFloat(display.innerText)/100;
+            
+        if (displayValue.toString().length > 9) 
+        {
+            displayValue = parseFloat(displayValue.toFixed(9));
+        }
+
+        display.innerText = displayValue;
+    }
+    
 });
 
+const btnDecimal = document.querySelector(".decimal");
+
 btnDecimal.addEventListener('click', function(e){
-    display.innerText = display.innerText.toString() + '.'
+    if(display.innerText.toString().includes(".") == false && display.innerText.toString() != "")
+    {
+        display.innerText = display.innerText.toString() + '.';
+    }
 });
 
 function add(number1, number2){
-    let result = number1 + number2;
+    let result = parseFloat(number1 + number2);
 
     return result;
 }
 
 function subtract(number1, number2){
-    let result = number1 - number2;
+    let result = parseFloat(number1 - number2);
 
     return result;
 }
 
 function multiply(number1, number2){
-    let result = number1 * number2;
+    let result = parseFloat(number1 * number2);
 
     return result;
 }
 
 function divide(number1, number2){
-    let result = number1 / number2;
+    let result = parseFloat(number1 / number2);
 
     return result;
 }
